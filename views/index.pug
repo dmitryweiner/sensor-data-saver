@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  table
+    tr
+      th Time
+      th Temperature
+      th Humidity
+      th Pressure
+    each measure in measures
+      tr
+        td= measure.timestamp.toLocaleString()
+        td= measure.temperature
+        td= measure.humidity
+        td= measure.pressure
