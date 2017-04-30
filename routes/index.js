@@ -4,7 +4,30 @@ var SensorMeasure = require('../models/sensorMeasure');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  SensorMeasure.find({},
+  res.render('index');
+});
+
+router.get('/measures', function (req, res, next) {
+  var request;
+
+  if (typeof req.query.from != 'undefined' && req.query.from &&
+    typeof req.query.to != 'undefined' && req.query.to
+  ) {
+    request = {
+      $and: [
+        {timestamp: {$gt: req.query.from}},
+        {timestamp: {$lt: req.query.to}}
+      ]
+    };
+  } else if(typeof req.query.to != 'undefined' && req.query.to) {
+    request = {timestamp: {$lt: req.query.to}};
+  } else {
+    return res.status(400).json({
+      message: 'Wrong request.'
+    });
+  }
+
+  SensorMeasure.find(request,
     null,
     {
       sort: {'timestamp': -1},
@@ -13,9 +36,12 @@ router.get('/', function (req, res, next) {
   ).exec(
     function (err, measures) {
       if (err) {
-        console.warn('error', err.message);
+        console.error('error', err.message);
+        return res.status(500).json({
+          message: err.message
+        });
       }
-      res.render('index', {measures: measures});
+      return res.json(measures);
     });
 });
 

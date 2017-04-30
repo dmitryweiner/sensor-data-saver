@@ -3,5 +3,8 @@ html
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
-  body
+    link(rel='stylesheet', href='/stylesheets/vis-timeline-graph2d.min.css')
+    script(type='text/javascript', src='/javascripts/libs/vis.js')
+    script(type='text/javascript', src='/javascripts/init.js')
+  body(onLoad='init()')
     block content
