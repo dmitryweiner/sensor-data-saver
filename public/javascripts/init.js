@@ -8,9 +8,9 @@ function init() {
   var humiditySeries = new vis.DataSet();
 
   var options = {
-/*
-    start: vis.moment().add(-30, 'seconds'), // changed so its faster
+    start: vis.moment().add(-10, 'minutes'), // changed so its faster
     end: vis.moment(),
+/*
     dataAxis: {
       left: {
         range: {
@@ -19,6 +19,7 @@ function init() {
       }
     },
 */
+    autoResize: true,
     drawPoints: {
       style: 'circle' // square, circle
     },
@@ -27,9 +28,9 @@ function init() {
     }
   };
 
-  var temperatureChart = new vis.Graph2d(document.getElementById('temperatureChart'), temperatureSeries);
-  var pressureChart = new vis.Graph2d(document.getElementById('pressureChart'), pressureSeries);
-  var humidityChart = new vis.Graph2d(document.getElementById('humidityChart'), humiditySeries);
+  var temperatureChart = new vis.Graph2d(document.getElementById('temperatureChart'), temperatureSeries, options);
+  var pressureChart = new vis.Graph2d(document.getElementById('pressureChart'), pressureSeries, options);
+  var humidityChart = new vis.Graph2d(document.getElementById('humidityChart'), humiditySeries, options);
 
   setInterval(function() {
     var currentTime = new Date().getTime();
@@ -39,6 +40,16 @@ function init() {
         humiditySeries.add({x: new Date(measure.timestamp).getTime(), y: measure.humidity});
         pressureSeries.add({x: new Date(measure.timestamp).getTime(), y: measure.pressure});
       });
+      var maxTimestamp;
+      measures.forEach(function(measure) {
+        var current = new Date(measure.timestamp);
+        if (!maxTimestamp || maxTimestamp < current) {
+          maxTimestamp = current;
+        }
+      });
+      temperatureChart.setWindow(vis.moment(maxTimestamp).add(-10, 'minutes'), maxTimestamp, {animation: false});
+      humidityChart.setWindow(vis.moment(maxTimestamp).add(-10, 'minutes'), maxTimestamp, {animation: false});
+      pressureChart.setWindow(vis.moment(maxTimestamp).add(-10, 'minutes'), maxTimestamp, {animation: false});
     }).catch(function (error) {
       console.error(error);
     });

@@ -8,7 +8,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/measures', function (req, res, next) {
-  var request;
+  var request, limit = 0;
 
   if (typeof req.query.from != 'undefined' && req.query.from &&
     typeof req.query.to != 'undefined' && req.query.to
@@ -21,17 +21,17 @@ router.get('/measures', function (req, res, next) {
     };
   } else if(typeof req.query.to != 'undefined' && req.query.to) {
     request = {timestamp: {$lt: req.query.to}};
+    limit = 100;
   } else {
-    return res.status(400).json({
-      message: 'Wrong request.'
-    });
+    request = {};
+    limit = 100;
   }
 
   SensorMeasure.find(request,
     null,
     {
       sort: {'timestamp': -1},
-      limit: 20
+      limit: limit
     }
   ).exec(
     function (err, measures) {
