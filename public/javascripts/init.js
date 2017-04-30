@@ -72,7 +72,8 @@ function getData(previousTime, currentTime){
       }
     };
 
-    xmlhttp.open('GET', '/measures?from=' + (previousTime ?  previousTime : '') + '&to=' + currentTime, true);
+    // TODO: load list of sensors dynamically via /sensors
+    xmlhttp.open('GET', '/measures/bme280/?from=' + (previousTime ?  previousTime : '') + '&to=' + currentTime, true);
     xmlhttp.send();
   });
 }

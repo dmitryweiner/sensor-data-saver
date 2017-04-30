@@ -1,10 +1,13 @@
 var mongoose = require('mongoose');
+var config = require('../config');
 var Schema = mongoose.Schema;
 
-// set up a mongoose model and pass it using module.exports
 module.exports = mongoose.model('SensorMeasure', new Schema({
+  sensor: {type: String, index: true},
   temperature: Number,
   humidity: Number,
   pressure: Number,
-  timestamp: {type: Date, default: Date.now }
+  timestamp: {type: Date, default: Date.now}
+}, {
+  capped: config.maxMeasuresDbStorage
 }));

@@ -9,6 +9,7 @@ var mongoose = require('mongoose');
 var config = require('./config');
 
 var SensorMeasure = require('./models/sensorMeasure');
+var Sensor = require('./models/sensor');
 
 var index = require('./routes/index');
 
@@ -59,26 +60,47 @@ mongooseConnection.on(
 );
 
 var client = mqtt.connect('mqtt://localhost', {
-  username: 'testuser', // TODO: config
-  password: '123456'
+  username: config.mqtt.user,
+  password: config.mqtt.password
 });
 
 client.on('connect', function () {
-  client.subscribe('sensors/bme280');
+  client.subscribe('sensors/+');
 });
 
 client.on('message', function (topic, message) {
-  var messageBody, sensorMeasure;
+  var messageBody, sensorMeasure, sensorName;
+  sensorName = topic.split('/')[1];
   try {
     messageBody = JSON.parse(message.toString());
     sensorMeasure = new SensorMeasure(messageBody);
+    sensorMeasure.sensor = sensorName;
     sensorMeasure.save(function (err) {
       if (err) {
         console.log('Error saving measure', err.message);
       }
     });
+
+    if (sensorMeasure.sensor) {
+      Sensor.findOne({'name': sensorName}).exec(function (err, sensor) {
+        if (err) {
+          console.error(err);
+        }
+        if (!sensor) {
+          var newSensor = new Sensor({
+            name: sensorName,
+            description: '' // will be implemented later
+          });
+          newSensor.save(function (err) {
+            if (err) {
+              console.error('Error saving sensor', err.message);
+            }
+          });
+        }
+      });
+    }
   } catch (err) {
-    console.warn('Cannot parse message body:', message.toString());
+    console.error('Cannot parse message body:', err, message.toString());
   }
 });
 

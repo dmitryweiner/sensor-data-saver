@@ -1,13 +1,14 @@
 var express = require('express');
 var router = express.Router();
 var SensorMeasure = require('../models/sensorMeasure');
+var Sensor = require('../models/sensor');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
   res.render('index');
 });
 
-router.get('/measures', function (req, res, next) {
+router.get('/measures/:sensor', function (req, res, next) {
   var request, limit = 0;
 
   if (typeof req.query.from != 'undefined' && req.query.from &&
@@ -43,6 +44,19 @@ router.get('/measures', function (req, res, next) {
       }
       return res.json(measures);
     });
+});
+
+router.get('/sensors', function (req, res, next) {
+  Sensor.find({}).exec(function(err, sensors) {
+    if (err) {
+      console.error('error', err.message);
+      return res.status(500).json({
+        message: err.message
+      });
+    }
+    return res.json(sensors);
+  });
+
 });
 
 module.exports = router;
