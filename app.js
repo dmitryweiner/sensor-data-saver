@@ -73,8 +73,9 @@ client.on('message', function (topic, message) {
   sensorName = topic.split('/')[1];
   try {
     messageBody = JSON.parse(message.toString());
-    sensorMeasure = new SensorMeasure(messageBody);
+    sensorMeasure = new SensorMeasure();
     sensorMeasure.sensor = sensorName;
+    sensorMeasure.parameters = messageBody.parameters;
     sensorMeasure.save(function (err) {
       if (err) {
         console.log('Error saving measure', err.message);

@@ -3,42 +3,48 @@
 function init() {
   var updateInterval = 2000;
   var previousTime;
-  var temperatureSeries = new vis.DataSet();
-  var pressureSeries = new vis.DataSet();
-  var humiditySeries = new vis.DataSet();
+  var groups = new vis.DataSet();
+  var dataset = new vis.DataSet();
+  var pressureDataset = new vis.DataSet();
+
+  groups.add({
+    id: 0,
+    content: 'temperature'
+  });
+
+  groups.add({
+    id: 1,
+    content: 'humidity'
+  });
 
   var options = {
     start: vis.moment().add(-10, 'minutes'), // changed so its faster
     end: vis.moment(),
-/*
-    dataAxis: {
-      left: {
-        range: {
-          min:-10, max: 10
-        }
-      }
-    },
-*/
     autoResize: true,
     drawPoints: {
       style: 'circle' // square, circle
     },
     shaded: {
       orientation: 'bottom' // top, bottom
-    }
+    },
+    legend: {left:{position:"bottom-left"}}
   };
 
-  var temperatureChart = new vis.Graph2d(document.getElementById('temperatureChart'), temperatureSeries, options);
-  var pressureChart = new vis.Graph2d(document.getElementById('pressureChart'), pressureSeries, options);
-  var humidityChart = new vis.Graph2d(document.getElementById('humidityChart'), humiditySeries, options);
+  var temperatureAndHumidityChart = new vis.Graph2d(document.getElementById('temperatureChart'), dataset, groups, options);
+  var pressureChart = new vis.Graph2d(document.getElementById('pressureChart'), pressureDataset, options);
 
   setInterval(function() {
     var currentTime = new Date().getTime();
     getData(previousTime, currentTime).then(function (measures) {
       measures.forEach(function (measure) {
-        temperatureSeries.add({x: new Date(measure.timestamp).getTime(), y: measure.temperature});
-        humiditySeries.add({x: new Date(measure.timestamp).getTime(), y: measure.humidity});
-        pressureSeries.add({x: new Date(measure.timestamp).getTime(), y: measure.pressure});
+        measure.parameters.forEach(function (parameter, key) {
+          var d = {x: new Date(measure.timestamp).getTime(), y: parseFloat(parameter.value), group: key};
+          if (key == 0 || key == 1) {
+            dataset.add(d);
+          } else {
+            pressureDataset.add(d);
+          }
+        });
       });
       var maxTimestamp;
       measures.forEach(function(measure) {
@@ -47,8 +53,7 @@ function init() {
           maxTimestamp = current;
         }
       });
-      temperatureChart.setWindow(vis.moment(maxTimestamp).add(-10, 'minutes'), maxTimestamp, {animation: false});
-      humidityChart.setWindow(vis.moment(maxTimestamp).add(-10, 'minutes'), maxTimestamp, {animation: false});
+      temperatureAndHumidityChart.setWindow(vis.moment(maxTimestamp).add(-10, 'minutes'), maxTimestamp, {animation: false});
       pressureChart.setWindow(vis.moment(maxTimestamp).add(-10, 'minutes'), maxTimestamp, {animation: false});
     }).catch(function (error) {
       console.error(error);
