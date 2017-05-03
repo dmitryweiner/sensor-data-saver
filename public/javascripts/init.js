@@ -1,7 +1,7 @@
 'use strict';
 
 function init() {
-  var updateInterval = 2000;
+  var updateInterval = 60*1000;
   var previousTime;
   var groups = new vis.DataSet();
   var dataset = new vis.DataSet();
