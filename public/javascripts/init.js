@@ -53,8 +53,10 @@ function init() {
           maxTimestamp = current;
         }
       });
-      temperatureAndHumidityChart.setWindow(vis.moment(maxTimestamp).add(-10, 'minutes'), maxTimestamp, {animation: false});
-      pressureChart.setWindow(vis.moment(maxTimestamp).add(-10, 'minutes'), maxTimestamp, {animation: false});
+      if (maxTimestamp) {
+        temperatureAndHumidityChart.setWindow(vis.moment(maxTimestamp).add(-10, 'minutes'), maxTimestamp, {animation: false});
+        pressureChart.setWindow(vis.moment(maxTimestamp).add(-10, 'minutes'), maxTimestamp, {animation: false});
+      }
     }).catch(function (error) {
       console.error(error);
     });
