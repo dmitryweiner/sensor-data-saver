@@ -18,7 +18,7 @@ function init() {
   });
 
   var options = {
-    start: vis.moment().add(-10, 'minutes'), // changed so its faster
+    start: vis.moment().add(-1, 'days'),
     end: vis.moment(),
     autoResize: true,
     drawPoints: {
@@ -33,7 +33,7 @@ function init() {
   var temperatureAndHumidityChart = new vis.Graph2d(document.getElementById('temperatureChart'), dataset, groups, options);
   var pressureChart = new vis.Graph2d(document.getElementById('pressureChart'), pressureDataset, options);
 
-  setInterval(function() {
+  function updateGraphs() {
     var currentTime = new Date().getTime();
     getData(previousTime, currentTime).then(function (measures) {
       measures.forEach(function (measure) {
@@ -54,15 +54,17 @@ function init() {
         }
       });
       if (maxTimestamp) {
-        temperatureAndHumidityChart.setWindow(vis.moment(maxTimestamp).add(-10, 'minutes'), maxTimestamp, {animation: false});
-        pressureChart.setWindow(vis.moment(maxTimestamp).add(-10, 'minutes'), maxTimestamp, {animation: false});
+        temperatureAndHumidityChart.setWindow(vis.moment(maxTimestamp).add(-1, 'days'), maxTimestamp, {animation: false});
+        pressureChart.setWindow(vis.moment(maxTimestamp).add(-1, 'days'), maxTimestamp, {animation: false});
       }
     }).catch(function (error) {
       console.error(error);
     });
     previousTime = currentTime;
-    
-  }, updateInterval);
+    setTimeout(updateGraphs, updateInterval);
+  }
+  updateGraphs();
+
 }
 
 function getData(previousTime, currentTime){
