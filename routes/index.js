@@ -28,8 +28,9 @@ router.get('/measures/:sensor', function (req, res, next) {
     limit = 100;
   }
 
-  SensorMeasure.find(request)
-    .select({ _id: 0, __v: 0 })
+  SensorMeasure
+    .find(request)
+    .select('-_id -__v')
     .sort({'timestamp': -1})
     .limit(limit)
     .exec(
@@ -45,7 +46,10 @@ router.get('/measures/:sensor', function (req, res, next) {
 });
 
 router.get('/sensors', function (req, res, next) {
-  Sensor.find({}).select({ _id: 0, __v: 0 }).exec(function(err, sensors) {
+  Sensor
+    .find({})
+    .select('-_id -__v')
+    .exec(function(err, sensors) {
     if (err) {
       console.error('error', err.message);
       return res.status(500).json({
