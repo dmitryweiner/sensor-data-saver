@@ -54,7 +54,7 @@ const mongooseConnection = mongoose.connection;
 /** mongose internal error handling */
 mongooseConnection.on(
   'error',
-  function () {
+  function (err) {
     console.log('mongoose error handler', err);
   }
 );
@@ -80,6 +80,7 @@ client.on('message', function (topic, message) {
       if (err) {
         console.log('Error saving measure', err.message);
       }
+      console.info('Saved new measure: ', sensorMeasure);
     });
 
     if (sensorMeasure.sensor) {
@@ -96,6 +97,7 @@ client.on('message', function (topic, message) {
             if (err) {
               console.error('Error saving sensor', err.message);
             }
+            console.info('Saved new sensor: ', newSensor);
           });
         }
       });
