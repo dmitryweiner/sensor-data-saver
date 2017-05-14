@@ -53,7 +53,7 @@ router.get('/sensors', function (req, res, next) {
   Sensor
     .find({})
     .select('-_id -__v')
-    .sort({'name': -1})
+    .sort({'name': 1})
     .exec(function(err, sensors) {
     if (err) {
       console.error('error', err.message);
