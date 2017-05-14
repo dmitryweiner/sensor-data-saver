@@ -11,6 +11,12 @@ router.get('/', function (req, res, next) {
 router.get('/measures/:sensor', function (req, res, next) {
   var request, limit = 0;
 
+  if (typeof req.query.limit != 'undefined'){
+    limit = req.query.limit;
+  } else {
+    limit = 100;
+  }
+
   if (typeof req.query.from != 'undefined' && req.query.from &&
     typeof req.query.to != 'undefined' && req.query.to
   ) {
@@ -20,18 +26,16 @@ router.get('/measures/:sensor', function (req, res, next) {
         {timestamp: {$lt: req.query.to}}
       ]
     };
-  } else if(typeof req.query.to != 'undefined' && req.query.to) {
+  } else if (typeof req.query.to != 'undefined' && req.query.to) {
     request = {timestamp: {$lt: req.query.to}};
-    limit = 100;
   } else {
     request = {};
-    limit = 100;
   }
 
   SensorMeasure.find(request,
     null,
     {
-      sort: {'timestamp': -1},
+      sort: {'_id': -1},
       limit: limit
     }
   ).exec(
@@ -47,7 +51,11 @@ router.get('/measures/:sensor', function (req, res, next) {
 });
 
 router.get('/sensors', function (req, res, next) {
-  Sensor.find({}).exec(function(err, sensors) {
+  Sensor.find(
+    {},
+    null,
+    {sort: {'name': -1}}
+  ).exec(function (err, sensors) {
     if (err) {
       console.error('error', err.message);
       return res.status(500).json({

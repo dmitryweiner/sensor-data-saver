@@ -19,7 +19,7 @@ function init() {
 
   var options = {
     start: vis.moment().add(-1, 'days'),
-    end: vis.moment(),
+    end: vis.moment().add(5, 'minutes'),
     autoResize: true,
     drawPoints: {
       style: 'circle' // square, circle
@@ -54,8 +54,8 @@ function init() {
         }
       });
       if (maxTimestamp) {
-        temperatureAndHumidityChart.setWindow(vis.moment(maxTimestamp).add(-1, 'days'), maxTimestamp, {animation: false});
-        pressureChart.setWindow(vis.moment(maxTimestamp).add(-1, 'days'), maxTimestamp, {animation: false});
+        temperatureAndHumidityChart.setWindow(vis.moment(maxTimestamp).add(-1, 'days'), vis.moment(maxTimestamp).add(5, 'minutes'), {animation: false});
+        pressureChart.setWindow(vis.moment(maxTimestamp).add(-1, 'days'), vis.moment(maxTimestamp).add(5, 'minutes'), {animation: false});
       }
     }).catch(function (error) {
       console.error(error);
