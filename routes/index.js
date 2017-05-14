@@ -32,13 +32,12 @@ router.get('/measures/:sensor', function (req, res, next) {
     request = {};
   }
 
-  SensorMeasure.find(request,
-    null,
-    {
-      sort: {'_id': -1},
-      limit: limit
-    }
-  ).exec(
+  SensorMeasure
+    .find(request)
+    .select('-_id -__v')
+    .sort({'_id': -1})
+    .limit(limit)
+    .exec(
     function (err, measures) {
       if (err) {
         console.error('error', err.message);
@@ -51,11 +50,11 @@ router.get('/measures/:sensor', function (req, res, next) {
 });
 
 router.get('/sensors', function (req, res, next) {
-  Sensor.find(
-    {},
-    null,
-    {sort: {'name': -1}}
-  ).exec(function (err, sensors) {
+  Sensor
+    .find({})
+    .select('-_id -__v')
+    .sort({'name': -1})
+    .exec(function(err, sensors) {
     if (err) {
       console.error('error', err.message);
       return res.status(500).json({
