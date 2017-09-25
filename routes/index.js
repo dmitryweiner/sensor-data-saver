@@ -40,7 +40,7 @@ router.get('/measures/:sensor', function (req, res, next) {
     .find(request)
     .select('-_id -__v')
     .sort({'_id': -1})
-    .limit(limit)
+    .limit(limit * reduceRatio)
     .exec(
     function (err, measures) {
       if (err) {
