@@ -9,12 +9,16 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/measures/:sensor', function (req, res, next) {
-  var request, limit = 0;
+  var request, limit = 0, reduceRatio = 1;
 
   if (typeof req.query.limit != 'undefined'){
     limit = req.query.limit;
   } else {
     limit = 100;
+  }
+
+  if (typeof req.query.reduceRatio != 'undefined'){
+      reduceRatio = req.query.reduceRatio;
   }
 
   if (typeof req.query.from != 'undefined' && req.query.from &&
@@ -36,7 +40,7 @@ router.get('/measures/:sensor', function (req, res, next) {
     .find(request)
     .select('-_id -__v')
     .sort({'_id': -1})
-    .limit(limit)
+    .limit(limit * reduceRatio)
     .exec(
     function (err, measures) {
       if (err) {
@@ -45,7 +49,7 @@ router.get('/measures/:sensor', function (req, res, next) {
           message: err.message
         });
       }
-      return res.json(measures);
+      return res.json(reduce(measures, reduceRatio));
     });
 });
 
@@ -65,5 +69,25 @@ router.get('/sensors', function (req, res, next) {
   });
 
 });
+
+/**
+ * Make less measures.
+ * Reduce ration defines how many measures should we omit (TODO: or merge).
+ *
+ * @param {Array} measures
+ * @param {number} reduceRatio
+ * @return {Array}
+ */
+function reduce(measures, reduceRatio) {
+  let result = [];
+  let currentMeasure = null;
+  measures.forEach((measure, index) => {
+    // TODO: here we should calculate average measure
+    if (index % reduceRatio === 0) {
+        result.push(measure);
+    }
+  });
+  return result;
+}
 
 module.exports = router;
