@@ -1,7 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var SensorMeasure = require('../models/sensorMeasure');
-var Sensor = require('../models/sensor');
+let express = require('express');
+let router = express.Router();
+let SensorMeasure = require('../models/sensorMeasure');
+let Sensor = require('../models/sensor');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -9,20 +9,20 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/measures/:sensor', function (req, res, next) {
-  var request, limit = 0, reduceRatio = 1;
+  let request, limit = 0, reduceRatio = 1;
 
-  if (typeof req.query.limit != 'undefined'){
+  if (typeof req.query.limit !== 'undefined'){
     limit = req.query.limit;
   } else {
-    limit = 100;
+    limit = 10000;
   }
 
-  if (typeof req.query.reduceRatio != 'undefined'){
+  if (typeof req.query.reduceRatio !== 'undefined'){
       reduceRatio = req.query.reduceRatio;
   }
 
-  if (typeof req.query.from != 'undefined' && req.query.from &&
-    typeof req.query.to != 'undefined' && req.query.to
+  if (typeof req.query.from !== 'undefined' && req.query.from &&
+    typeof req.query.to !== 'undefined' && req.query.to
   ) {
     request = {
       $and: [
@@ -30,7 +30,7 @@ router.get('/measures/:sensor', function (req, res, next) {
         {timestamp: {$lt: req.query.to}}
       ]
     };
-  } else if (typeof req.query.to != 'undefined' && req.query.to) {
+  } else if (typeof req.query.to !== 'undefined' && req.query.to) {
     request = {timestamp: {$lt: req.query.to}};
   } else {
     request = {};
