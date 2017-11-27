@@ -1,8 +1,24 @@
 extends layout
 
 block content
-  h1 Temperature + Humidity
+  h1 Sensor measures
+  div Days before:&nbsp;
+    select(id='days')
+        option(value='1') 1
+        option(value='2') 2
+        option(value='3') 3
+        option(value='5') 5
+        option(value='10') 10
+
+  div Dots per hour:&nbsp;
+    select(id='reduceRatio')
+        option(value='1') 6
+        option(value='2') 3
+        option(value='3') 2
+        option(value='6') 1
+
+  h3 Temperature + Humidity
   div(id='temperatureChart', width='400', height='100')
 
-  h1 Pressure
+  h3 Pressure
   div(id='pressureChart', width='400', height='100')
