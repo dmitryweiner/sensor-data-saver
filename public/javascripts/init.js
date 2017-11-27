@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
             clearTimeout(timeoutId);
             pressureDataset.clear();
             dataset.clear();
-            previousTime = vis.moment().add(0 - event.target.value, 'days');
+            previousTime = vis.moment().add(0 - event.target.value, 'days').valueOf();
             reduceRatio = reduceRatioSelector ? reduceRatioSelector.value : null;
             workingCycle();
         });
@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function () {
             clearTimeout(timeoutId);
             pressureDataset.clear();
             dataset.clear();
-            previousTime = daysSelector ? vis.moment().add(0 - daysSelector.value, 'days') : null;
+            previousTime = daysSelector ? vis.moment().add(0 - daysSelector.value, 'days').valueOf() : null;
             reduceRatio = event.target.value;
             workingCycle();
         });
