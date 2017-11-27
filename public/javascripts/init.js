@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (key == 0 || key == 1) {
                     pointsTemperature.push(d);
                 } else {
-                    pointsPressure.add(d);
+                    pointsPressure.push(d);
                 }
             });
             dataset.add(pointsTemperature);
