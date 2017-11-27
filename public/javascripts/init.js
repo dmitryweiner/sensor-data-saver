@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let updateInterval = 60 * 1000;
     let reduceRatio = 6;
     let timeoutId;
-    let previousTime;
+    let previousTime = vis.moment().add( - 1, 'days').valueOf();
     let currentTime;
     let temperatureGroups = new vis.DataSet();
     let pressureGroups = new vis.DataSet();
