@@ -3,7 +3,7 @@
 document.addEventListener('DOMContentLoaded', function () {
 
     let updateInterval = 60 * 1000;
-    let reduceRatio = 1;
+    let reduceRatio = 6;
     let timeoutId;
     let previousTime;
     let currentTime;
@@ -12,6 +12,14 @@ document.addEventListener('DOMContentLoaded', function () {
     let dataset = new vis.DataSet();
     let pressureDataset = new vis.DataSet();
 
+    /**
+     * Get data from server
+     *
+     * @param previousTime
+     * @param currentTime
+     * @param reduceRatio
+     * @returns {Promise}
+     */
     function getData(previousTime, currentTime, reduceRatio) {
         return new Promise(function (resolve, reject) {
             let xmlhttp = new XMLHttpRequest();
@@ -36,6 +44,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    /**
+     * Update graphs with given data
+     * @param measures
+     */
     function updateGraphs(measures) {
         measures.forEach(function (measure) {
             measure.parameters.forEach(function (parameter, key) {
@@ -68,15 +80,35 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    /**
+     * The main working cycle
+     */
     function workingCycle() {
         currentTime = new Date().getTime();
+        controlSpinner(true);
         getData(previousTime, currentTime, reduceRatio).then(function (measures) {
             updateGraphs(measures);
+            controlSpinner(false);
         }).catch(function (error) {
             console.error(error);
         });
         previousTime = currentTime;
         timeoutId = setTimeout(workingCycle, updateInterval);
+    }
+
+    /**
+     * Control spinner state (on|off)
+     * @param {boolean} state
+     * @returns {boolean}
+     */
+    function controlSpinner(state) {
+        let spinnerElement = document.getElementById('spinner');
+
+        if (!spinnerElement) {
+            return false;
+        }
+
+        spinnerElement.style.display = state ? 'block' : 'none';
     }
 
     temperatureGroups.add({
@@ -114,6 +146,8 @@ document.addEventListener('DOMContentLoaded', function () {
     if (daysSelector) {
         daysSelector.addEventListener('change', function (event) {
             clearTimeout(timeoutId);
+            pressureDataset.clear();
+            dataset.clear();
             previousTime = vis.moment().add(0 - event.target.value, 'days');
             workingCycle();
         });
@@ -124,6 +158,8 @@ document.addEventListener('DOMContentLoaded', function () {
     if (reduceRatioSelector) {
         reduceRatioSelector.addEventListener('change', function (event) {
             clearTimeout(timeoutId);
+            pressureDataset.clear();
+            dataset.clear();
             reduceRatio = event.target.value;
             workingCycle();
         });
