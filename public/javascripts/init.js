@@ -47,16 +47,18 @@ document.addEventListener('DOMContentLoaded', function () {
      * @param measures
      */
     function updateGraphs(measures) {
-        let newData = [];
+        if (!measures.length) {
+            return false;
+        }
+
         measures.forEach(function (measure) {
-            newData.push([
+            dataset.push([
                 new Date(measure.timestamp),
                 parseFloat(measure.parameters[0].value),
                 parseFloat(measure.parameters[1].value),
                 parseFloat(measure.parameters[2].value)
             ]);
         });
-        dataset = dataset.concat(newData);
 
         if (!chart) {
             chart = new Dygraph(document.getElementById('chart'), dataset,
@@ -76,9 +78,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
         } else {
-            if (newData.length) {
-                chart.updateOptions({'file': dataset});
-            }
+            chart.updateOptions({'file': dataset});
         }
     }
 
