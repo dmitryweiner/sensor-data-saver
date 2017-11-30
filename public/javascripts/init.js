@@ -50,14 +50,18 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     function updateGraphs(measures) {
         measures.forEach(function (measure) {
+            let pointsTemperature = [];
+            let pointsPressure = [];
             measure.parameters.forEach(function (parameter, key) {
                 let d = {x: new Date(measure.timestamp).getTime(), y: parseFloat(parameter.value), group: key};
                 if (key == 0 || key == 1) {
-                    dataset.add(d);
+                    pointsTemperature.push(d);
                 } else {
-                    pressureDataset.add(d);
+                    pointsPressure.push(d);
                 }
             });
+            dataset.add(pointsTemperature);
+            pressureDataset.add(pointsPressure);
         });
         let maxTimestamp;
         measures.forEach(function (measure) {
