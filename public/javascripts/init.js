@@ -51,8 +51,8 @@ document.addEventListener('DOMContentLoaded', function () {
         let newTemperatureData = [];
         let newPressureData = [];
         measures.forEach(function (measure) {
-            newTemperatureData.push([new Date(measure.timestamp).getTime(), parseFloat(measure.parameters[0].value), parseFloat(measure.parameters[1].value)]);
-            newPressureData.push([new Date(measure.timestamp).getTime(), parseFloat(measure.parameters[2].value)]);
+            newTemperatureData.push([new Date(measure.timestamp), parseFloat(measure.parameters[0].value), parseFloat(measure.parameters[1].value)]);
+            newPressureData.push([new Date(measure.timestamp), parseFloat(measure.parameters[2].value)]);
         });
         temperatureAndHumidityDataset = temperatureAndHumidityDataset.concat(newTemperatureData);
         pressureDataset = pressureDataset.concat(newPressureData);
