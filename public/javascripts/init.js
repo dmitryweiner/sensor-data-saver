@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
         } else {
             if (newData.length) {
-                chart.updateOptions({file: dataset});
+                chart.updateOptions({'file': dataset});
             }
         }
     }
