@@ -48,20 +48,14 @@ document.addEventListener('DOMContentLoaded', function () {
      * @param measures
      */
     function updateGraphs(measures) {
+        let newTemperatureData = [];
+        let newPressureData = [];
         measures.forEach(function (measure) {
-            let newTemperatureData = [];
-            let newPressureData = [];
-            measure.parameters.forEach(function (parameter, key) {
-                let d = {x: new Date(measure.timestamp).getTime(), y: parseFloat(parameter.value), group: key};
-                if (key == 0 || key == 1) {
-                    newTemperatureData.push(d);
-                } else {
-                    newPressureData.push(d);
-                }
-            });
-            temperatureAndHumidityDataset = temperatureAndHumidityDataset.concat(newTemperatureData);
-            pressureDataset = pressureDataset.concat(newPressureData);
+            newTemperatureData.push([new Date(measure.timestamp).getTime(), parseFloat(measure.parameters[0].value), parseFloat(measure.parameters[1].value)]);
+            newPressureData.push([new Date(measure.timestamp).getTime(), parseFloat(measure.parameters[2].value)]);
         });
+        temperatureAndHumidityDataset = temperatureAndHumidityDataset.concat(newTemperatureData);
+        pressureDataset = pressureDataset.concat(newPressureData);
 
         if (!temperatureAndHumidityChart) {
             temperatureAndHumidityChart = new Dygraph(document.getElementById('temperatureChart'), temperatureAndHumidityDataset,
