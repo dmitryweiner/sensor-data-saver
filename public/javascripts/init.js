@@ -7,9 +7,8 @@ document.addEventListener('DOMContentLoaded', function () {
     let timeoutId;
     let previousTime = moment().add( - 1, 'days').valueOf();
     let currentTime;
-    let temperatureAndHumidityDataset = [];
-    let pressureDataset = [];
-    let temperatureAndHumidityChart, pressureChart;
+    let dataset = [];
+    let chart;
 
     /**
      * Get data from server
@@ -48,38 +47,37 @@ document.addEventListener('DOMContentLoaded', function () {
      * @param measures
      */
     function updateGraphs(measures) {
-        let newTemperatureData = [];
-        let newPressureData = [];
+        let newData = [];
         measures.forEach(function (measure) {
-            newTemperatureData.push([new Date(measure.timestamp), parseFloat(measure.parameters[0].value), parseFloat(measure.parameters[1].value)]);
-            newPressureData.push([new Date(measure.timestamp), parseFloat(measure.parameters[2].value)]);
+            newData.push([
+                new Date(measure.timestamp),
+                parseFloat(measure.parameters[0].value),
+                parseFloat(measure.parameters[1].value),
+                parseFloat(measure.parameters[2].value)
+            ]);
         });
-        temperatureAndHumidityDataset = temperatureAndHumidityDataset.concat(newTemperatureData);
-        pressureDataset = pressureDataset.concat(newPressureData);
+        dataset = dataset.concat(newData);
 
-        if (!temperatureAndHumidityChart) {
-            temperatureAndHumidityChart = new Dygraph(document.getElementById('temperatureChart'), temperatureAndHumidityDataset,
+        if (!chart) {
+            chart = new Dygraph(document.getElementById('chart'), dataset,
                 {
                     drawPoints: true,
-                    showRoller: true,
-                    labels: ['Time', 'Temperature', 'Humidity']
+                    width: 800,
+                    height: 600,
+                    labels: ['Time', 'Temperature', 'Humidity', 'Pressure'],
+                    series: {
+                        'Pressure': { axis: 'y2' },
+                    },
+                    x: {
+                    },
+                    y: {
+                    },
+                    y2: {
+                    }
                 });
         } else {
-            if (newTemperatureData.length) {
-                temperatureAndHumidityChart.updateOptions({file: temperatureAndHumidityDataset});
-            }
-        }
-
-        if (!pressureChart) {
-            pressureChart = new Dygraph(document.getElementById('pressureChart'), pressureDataset,
-                {
-                    drawPoints: true,
-                    showRoller: true,
-                    labels: ['Time', 'Pressure']
-                });
-        } else {
-            if (newPressureData) {
-                pressureChart.updateOptions({file: pressureDataset});
+            if (newData.length) {
+                chart.updateOptions({file: dataset});
             }
         }
     }
@@ -88,10 +86,8 @@ document.addEventListener('DOMContentLoaded', function () {
      * Clear all data
      */
     function clearDatasets() {
-        temperatureAndHumidityDataset = [];
-        pressureDataset = [];
-        temperatureAndHumidityChart.updateOptions({file: temperatureAndHumidityDataset});
-        pressureChart.updateOptions({file: pressureDataset});
+        dataset = [];
+        chart.updateOptions({file: dataset});
     }
 
     /**
