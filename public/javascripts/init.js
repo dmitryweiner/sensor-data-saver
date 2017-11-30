@@ -85,6 +85,16 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /**
+     * Clear all data
+     */
+    function clearDatasets() {
+        temperatureAndHumidityDataset = [];
+        pressureDataset = [];
+        temperatureAndHumidityChart.updateOptions({file: temperatureAndHumidityDataset});
+        pressureChart.updateOptions({file: pressureDataset});
+    }
+
+    /**
      * The main working cycle
      */
     function workingCycle() {
@@ -119,8 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (daysSelector) {
         daysSelector.addEventListener('change', function (event) {
             clearTimeout(timeoutId);
-            temperatureAndHumidityChart.updateOptions({file: []});
-            pressureChart.updateOptions({file: []});
+            clearDatasets();
             previousTime = moment().add(0 - event.target.value, 'days').valueOf();
             reduceRatio = reduceRatioSelector ? reduceRatioSelector.value : null;
             workingCycle();
@@ -132,8 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (reduceRatioSelector) {
         reduceRatioSelector.addEventListener('change', function (event) {
             clearTimeout(timeoutId);
-            temperatureAndHumidityChart.updateOptions({file: []});
-            pressureChart.updateOptions({file: []});
+            clearDatasets();
             previousTime = daysSelector ? moment().add(0 - daysSelector.value, 'days').valueOf() : null;
             reduceRatio = event.target.value;
             workingCycle();
