@@ -5,12 +5,11 @@ document.addEventListener('DOMContentLoaded', function () {
     let updateInterval = 60 * 1000;
     let reduceRatio = 6;
     let timeoutId;
-    let previousTime = vis.moment().add( - 1, 'days').valueOf();
+    let previousTime = moment().add( - 1, 'days').valueOf();
     let currentTime;
-    let temperatureGroups = new vis.DataSet();
-    let pressureGroups = new vis.DataSet();
-    let dataset = new vis.DataSet();
-    let pressureDataset = new vis.DataSet();
+    let temperatureAndHumidityDataset = [];
+    let pressureDataset = [];
+    let temperatureAndHumidityChart, pressureChart;
 
     /**
      * Get data from server
@@ -50,37 +49,40 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     function updateGraphs(measures) {
         measures.forEach(function (measure) {
-            let pointsTemperature = [];
-            let pointsPressure = [];
+            let newTemperatureData = [];
+            let newPressureData = [];
             measure.parameters.forEach(function (parameter, key) {
                 let d = {x: new Date(measure.timestamp).getTime(), y: parseFloat(parameter.value), group: key};
                 if (key == 0 || key == 1) {
-                    pointsTemperature.push(d);
+                    newTemperatureData.push(d);
                 } else {
-                    pointsPressure.push(d);
+                    newPressureData.push(d);
                 }
             });
-            dataset.add(pointsTemperature);
-            pressureDataset.add(pointsPressure);
+            temperatureAndHumidityDataset = temperatureAndHumidityDataset.concat(newTemperatureData);
+            pressureDataset = pressureDataset.concat(newPressureData);
         });
-        let maxTimestamp;
-        measures.forEach(function (measure) {
-            let current = new Date(measure.timestamp);
-            if (!maxTimestamp || maxTimestamp < current) {
-                maxTimestamp = current;
-            }
-        });
-        if (maxTimestamp) {
-            temperatureAndHumidityChart
-                .setWindow(
-                    vis.moment(maxTimestamp).add(-1, 'days'),
-                    vis.moment(maxTimestamp).add(5, 'minutes'),
-                    {animation: false});
-            pressureChart
-                .setWindow(
-                    vis.moment(maxTimestamp).add(-1, 'days'),
-                    vis.moment(maxTimestamp).add(5, 'minutes'),
-                    {animation: false});
+
+        if (!temperatureAndHumidityChart) {
+            temperatureAndHumidityChart = new Dygraph(document.getElementById('temperatureChart'), temperatureAndHumidityDataset,
+                {
+                    drawPoints: true,
+                    showRoller: true,
+                    labels: ['Time', 'Temperature + humidity']
+                });
+        } else {
+            temperatureAndHumidityChart.updateOptions({file: temperatureAndHumidityDataset});
+        }
+
+        if (!pressureChart) {
+            pressureChart = new Dygraph(document.getElementById('pressureChart'), pressureDataset,
+                {
+                    drawPoints: true,
+                    showRoller: true,
+                    labels: ['Time', 'Pressure']
+                });
+        } else {
+            pressureChart.updateOptions({file: pressureDataset});
         }
     }
 
@@ -115,44 +117,13 @@ document.addEventListener('DOMContentLoaded', function () {
         spinnerElement.style.display = state ? 'block' : 'none';
     }
 
-    temperatureGroups.add({
-        id: 0,
-        content: 'temperature'
-    });
-
-    temperatureGroups.add({
-        id: 1,
-        content: 'humidity'
-    });
-
-    pressureGroups.add({
-        id: 0,
-        content: 'pressure'
-    });
-
-    let options = {
-        start: vis.moment().add(-1, 'days'),
-        end: vis.moment().add(5, 'minutes'),
-        autoResize: true,
-        drawPoints: {
-            style: 'circle' // square, circle
-        },
-        shaded: {
-            orientation: 'bottom' // top, bottom
-        },
-        legend: {left: {position: "bottom-left"}}
-    };
-
-    let temperatureAndHumidityChart = new vis.Graph2d(document.getElementById('temperatureChart'), dataset, temperatureGroups, options);
-    let pressureChart = new vis.Graph2d(document.getElementById('pressureChart'), pressureDataset, pressureGroups, options);
-
     let daysSelector = document.getElementById('days');
     if (daysSelector) {
         daysSelector.addEventListener('change', function (event) {
             clearTimeout(timeoutId);
-            pressureDataset.clear();
-            dataset.clear();
-            previousTime = vis.moment().add(0 - event.target.value, 'days').valueOf();
+            temperatureAndHumidityChart.updateOptions({file: []});
+            pressureChart.updateOptions({file: []});
+            previousTime = moment().add(0 - event.target.value, 'days').valueOf();
             reduceRatio = reduceRatioSelector ? reduceRatioSelector.value : null;
             workingCycle();
         });
@@ -163,9 +134,9 @@ document.addEventListener('DOMContentLoaded', function () {
     if (reduceRatioSelector) {
         reduceRatioSelector.addEventListener('change', function (event) {
             clearTimeout(timeoutId);
-            pressureDataset.clear();
-            dataset.clear();
-            previousTime = daysSelector ? vis.moment().add(0 - daysSelector.value, 'days').valueOf() : null;
+            temperatureAndHumidityChart.updateOptions({file: []});
+            pressureChart.updateOptions({file: []});
+            previousTime = daysSelector ? moment().add(0 - daysSelector.value, 'days').valueOf() : null;
             reduceRatio = event.target.value;
             workingCycle();
         });
