@@ -62,10 +62,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 {
                     drawPoints: true,
                     showRoller: true,
-                    labels: ['Time', 'Temperature + humidity']
+                    labels: ['Time', 'Temperature', 'Humidity']
                 });
         } else {
-            temperatureAndHumidityChart.updateOptions({file: temperatureAndHumidityDataset});
+            if (newTemperatureData.length) {
+                temperatureAndHumidityChart.updateOptions({file: temperatureAndHumidityDataset});
+            }
         }
 
         if (!pressureChart) {
@@ -76,7 +78,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     labels: ['Time', 'Pressure']
                 });
         } else {
-            pressureChart.updateOptions({file: pressureDataset});
+            if (newPressureData) {
+                pressureChart.updateOptions({file: pressureDataset});
+            }
         }
     }
 
