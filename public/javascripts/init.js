@@ -63,6 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!chart) {
             chart = new Dygraph(document.getElementById('chart'), dataset,
                 {
+                    legend: 'always',
                     drawPoints: true,
                     width: 800,
                     height: 600,
