@@ -16,7 +16,7 @@ Don't forget to setup security: https://www.digitalocean.com/community/tutorials
 * Node.js
 * Express.js (web framework)
 * Mongoose.js (MongoDB framework)
-* VisJs -- 2D graphs
+* [Dygraphs](http://dygraphs.com/) -- 2D graphs
 
 ## Installation
 * `npm install`
