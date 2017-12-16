@@ -24,4 +24,4 @@ Don't forget to setup security: https://www.digitalocean.com/community/tutorials
 * Set up pm2 manager or run directly via "npm run"
 
 ## Live example
-Running example is running [here](http://sensor.dweiner.ru/) (data from sensor inside my room)
+Live example is running [here](http://sensor.dweiner.ru/) (data from sensor inside my room)
