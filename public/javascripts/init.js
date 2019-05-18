@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let timeoutId;
   let previousTime = moment().add(-1, 'days').valueOf();
   let currentTime;
-  let dataset = [[0]];
+  let dataset = [];
   let chart = new Dygraph(document.getElementById('chart'), dataset, {
     legend: 'always',
     drawPoints: true,
