@@ -105,7 +105,9 @@ document.addEventListener('DOMContentLoaded', function () {
     pictureSelector.value = pictures.length - 1;
 
     const picture = document.getElementById('picture');
-    picture.setAttribute('src', pictures[pictures.length - 1].picture);
+    if (pictures.length) {
+      picture.setAttribute('src', pictures[pictures.length - 1].picture);
+    }
   }
 
 
