@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
         + (previousTime ? previousTime : '')
         + '&to=' + currentTime
         + '&reduceRatio=' + reduceRatio
-        + '&isLoadPictures=' + isLoadPictures ? 1 : 0, true);
+        + '&isLoadPictures=' + (isLoadPictures ? 1 : 0), true);
       xmlhttp.send();
     });
   }
