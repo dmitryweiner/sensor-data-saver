@@ -124,6 +124,7 @@ document.addEventListener('DOMContentLoaded', function () {
     controlSpinner(true);
     getData(previousTime, currentTime, reduceRatio).then(function (measures) {
       updateGraphs(measures);
+      updatePictureHolder(measures);
       controlSpinner(false);
     }).catch(function (error) {
       console.error(error);
