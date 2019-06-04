@@ -145,6 +145,7 @@ document.addEventListener('DOMContentLoaded', function () {
     isLoadPictures.addEventListener('change', function (event) {
       clearTimeout(timeoutId);
       clearDatasets();
+      previousTime = moment().add(-1, 'days').valueOf(); // should be from controls
       workingCycle();
     });
   }
