@@ -9,7 +9,11 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/measures/:sensor', function (req, res, next) {
-  let request, limit = 0, reduceRatio = 1;
+  let request, limit = 0, reduceRatio = 1, isLoadPictures = false;
+
+  if (typeof req.query.isLoadPictures !== 'undefined') {
+    isLoadPictures = req.query.isLoadPictures === 1;
+  }
 
   if (typeof req.query.limit !== 'undefined') {
     limit = req.query.limit;
@@ -49,7 +53,7 @@ router.get('/measures/:sensor', function (req, res, next) {
             message: err.message
           });
         }
-        return res.json(reduce(measures, reduceRatio));
+        return res.json(reduce(measures, reduceRatio, isLoadPictures));
       });
 });
 
@@ -76,15 +80,20 @@ router.get('/sensors', function (req, res, next) {
  *
  * @param {Array} measures
  * @param {number} reduceRatio
+ * @param {boolean} isLoadPictures
  * @return {Array}
  */
-function reduce(measures, reduceRatio) {
+function reduce(measures, reduceRatio, isLoadPictures) {
   let result = [];
   let currentMeasure = null;
   measures.forEach((measure, index) => {
     // TODO: here we should calculate average measure
     if (index % reduceRatio === 0) {
-      result.push(measure);
+      let measureToPut = measure;
+      if (!isLoadPictures) {
+        measureToPut.parameters = measureToPut.parameters.filter((parameter) => parameter.type !== 'image');
+      }
+      result.push(measureToPut);
     }
   });
   return result;
