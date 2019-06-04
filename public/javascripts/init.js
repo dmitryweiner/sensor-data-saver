@@ -90,10 +90,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     measures.forEach(function (measure) {
       const picture = measure.parameters.find((parameter) => parameter.type === 'image');
-      pictures.push({
-        date: new Date(measure.timestamp),
-        picture,
-      });
+      if (picture) {
+        pictures.push({
+          date: new Date(measure.timestamp),
+          picture: picture.value,
+        });
+      }
     });
 
     const pictureSelector = document.getElementById('pictureSelector');
