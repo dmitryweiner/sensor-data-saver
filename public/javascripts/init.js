@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let previousTime = moment().add(-1, 'days').valueOf();
   let currentTime;
   let dataset = [];
+  let pictures = [];
   let chart = new Dygraph(document.getElementById('chart'), dataset, {
     legend: 'always',
     drawPoints: true,
@@ -79,10 +80,39 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /**
+   * Update pucture holder
+   * @param measures
+   */
+  function updatePictureHolder(measures) {
+    if (!measures.length) {
+      return false;
+    }
+
+    measures.forEach(function (measure) {
+      const picture = measure.parameters.find((parameter) => parameter.type === 'image');
+      pictures.push({
+        date: new Date(measure.timestamp),
+        picture,
+      });
+    });
+
+    const pictureSelector = document.getElementById('pictureSelector');
+    pictureSelector.min = 0;
+    pictureSelector.max = pictures.length - 1;
+    pictureSelector.step = 1;
+    pictureSelector.value = pictures.length - 1;
+
+    const picture = document.getElementById('picture');
+    picture.setAttribute('src', pictures[pictures.length - 1].picture);
+  }
+
+
+  /**
    * Clear all data
    */
   function clearDatasets() {
     dataset = [];
+    pictures = [];
     chart.updateOptions({ file: dataset });
   }
 
@@ -149,6 +179,15 @@ document.addEventListener('DOMContentLoaded', function () {
       workingCycle();
     });
   }
+
+  const pictureSelector = document.getElementById('pictureSelector');
+  pictureSelector.addEventListener('change', function (event) {
+    const currentPicture = event.target.value;
+    if (typeof pictures[currentPicture] !== 'undefined') {
+      const picture = document.getElementById('picture');
+      picture.setAttribute('src', pictures[currentPicture].picture);
+    }
+  });
 
   workingCycle();
 });
