@@ -12,7 +12,7 @@ router.get('/measures/:sensor', function (req, res, next) {
   let request, limit = 0, reduceRatio = 1, isLoadPictures = false;
 
   if (typeof req.query.isLoadPictures !== 'undefined') {
-    isLoadPictures = req.query.isLoadPictures === 1;
+    isLoadPictures = req.query.isLoadPictures == 1;
   }
 
   if (typeof req.query.limit !== 'undefined') {
