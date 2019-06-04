@@ -31,6 +31,8 @@ document.addEventListener('DOMContentLoaded', function () {
    * @returns {Promise}
    */
   function getData(previousTime, currentTime, reduceRatio) {
+    const isLoadPictures = document.getElementById('isLoadPictures').checked;
+
     return new Promise(function (resolve, reject) {
       let xmlhttp = new XMLHttpRequest();
 
@@ -49,7 +51,8 @@ document.addEventListener('DOMContentLoaded', function () {
         '/measures/bme280/?from='
         + (previousTime ? previousTime : '')
         + '&to=' + currentTime
-        + '&reduceRatio=' + reduceRatio, true);
+        + '&reduceRatio=' + reduceRatio
+        + '&isLoadPictures=' + isLoadPictures ? 1 : 0, true);
       xmlhttp.send();
     });
   }
@@ -133,6 +136,15 @@ document.addEventListener('DOMContentLoaded', function () {
       clearDatasets();
       previousTime = daysSelector ? moment().add(0 - daysSelector.value, 'days').valueOf() : null;
       reduceRatio = event.target.value;
+      workingCycle();
+    });
+  }
+
+  let isLoadPictures = document.getElementById('isLoadPictures');
+  if (isLoadPictures) {
+    isLoadPictures.addEventListener('change', function (event) {
+      clearTimeout(timeoutId);
+      clearDatasets();
       workingCycle();
     });
   }
