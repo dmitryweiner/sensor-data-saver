@@ -17,3 +17,16 @@ a {
     margin-left: -15em;
     display: none;
 }
+
+#pictureHolder {
+    width: 800px;
+}
+
+#pictureSelector {
+    width: 100%;
+    height: 40px;
+}
+
+#picture {
+    width: 100%;
+}

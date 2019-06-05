@@ -186,11 +186,14 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   const pictureSelector = document.getElementById('pictureSelector');
-  pictureSelector.addEventListener('change', function (event) {
+  pictureSelector.addEventListener('input', function (event) {
     const currentPicture = event.target.value;
     if (typeof pictures[currentPicture] !== 'undefined') {
       const picture = document.getElementById('picture');
       picture.setAttribute('src', pictures[currentPicture].picture);
+
+      const pictureDate = document.getElementById('pictureDate');
+      pictureDate.innerHTML = pictures[currentPicture].date;
     }
   });
 
