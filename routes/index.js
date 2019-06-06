@@ -87,8 +87,7 @@ function reduce(measures, reduceRatio, isLoadPictures) {
   let result = [];
   let currentMeasure = null;
   measures.forEach((measure, index) => {
-    // TODO: here we should calculate average measure
-    if (index % reduceRatio === 0) {
+    if (reduceRatio === 1 || (index % reduceRatio) === (reduceRatio - 1)) { // get last of Nth
       let measureToPut = measure;
       if (!isLoadPictures) {
         measureToPut.parameters = measureToPut.parameters.filter((parameter) => parameter.type !== 'image');
