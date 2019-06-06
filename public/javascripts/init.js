@@ -104,9 +104,8 @@ document.addEventListener('DOMContentLoaded', function () {
     pictureSelector.step = 1;
     pictureSelector.value = pictures.length - 1;
 
-    const picture = document.getElementById('picture');
     if (pictures.length) {
-      picture.setAttribute('src', pictures[pictures.length - 1].picture);
+      displayPictureAndDate(pictures[pictures.length - 1]);
     }
   }
 
@@ -152,6 +151,14 @@ document.addEventListener('DOMContentLoaded', function () {
     spinnerElement.style.display = state ? 'block' : 'none';
   }
 
+  function displayPictureAndDate(picture) {
+    const pictureElement = document.getElementById('picture');
+    pictureElement.setAttribute('src', picture.picture);
+
+    const pictureDate = document.getElementById('pictureDate');
+    pictureDate.innerHTML = picture.date;
+  }
+
   let daysSelector = document.getElementById('days');
   if (daysSelector) {
     daysSelector.addEventListener('change', function (event) {
@@ -189,11 +196,7 @@ document.addEventListener('DOMContentLoaded', function () {
   pictureSelector.addEventListener('input', function (event) {
     const currentPicture = event.target.value;
     if (typeof pictures[currentPicture] !== 'undefined') {
-      const picture = document.getElementById('picture');
-      picture.setAttribute('src', pictures[currentPicture].picture);
-
-      const pictureDate = document.getElementById('pictureDate');
-      pictureDate.innerHTML = pictures[currentPicture].date;
+      displayPictureAndDate(pictures[currentPicture]);
     }
   });
 
