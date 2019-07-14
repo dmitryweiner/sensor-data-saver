@@ -104,6 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function clearDatasets() {
     dataset = [];
     chart.updateOptions({ file: dataset });
+    measures = [];
   }
 
   /**
@@ -115,8 +116,10 @@ document.addEventListener('DOMContentLoaded', function () {
     getData(previousTime, currentTime, reduceRatio).then(function (data) {
       updateGraphs(data);
       updatePictureHolder(data);
+      data.forEach((item) => {
+        measures.push(item);
+      });
       controlSpinner(false);
-      measures = data;
     }).catch(function (error) {
       console.error(error);
     });
