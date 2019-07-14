@@ -175,16 +175,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  let isLoadPictures = document.getElementById('isLoadPictures');
-  if (isLoadPictures) {
-    isLoadPictures.addEventListener('change', function (event) {
-      clearTimeout(timeoutId);
-      clearDatasets();
-      previousTime = moment().add(-1, 'days').valueOf(); // should be from controls
-      workingCycle();
-    });
-  }
-
   const pictureSelector = document.getElementById('pictureSelector');
   pictureSelector.addEventListener('input', function (event) {
     const currentPicture = event.target.value;
