@@ -113,11 +113,11 @@ document.addEventListener('DOMContentLoaded', function () {
     currentTime = new Date().getTime();
     controlSpinner(true);
     getData(previousTime, currentTime, reduceRatio).then(function (data) {
-      updateGraphs(data);
-      updatePictureHolder(data);
       data.forEach((item) => {
         measures.push(item);
       });
+      updateGraphs(data);
+      updatePictureHolder();
       controlSpinner(false);
     }).catch(function (error) {
       console.error(error);
