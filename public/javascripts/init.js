@@ -79,9 +79,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /**
    * Update pucture holder
-   * @param measures
    */
-  function updatePictureHolder(measures) {
+  function updatePictureHolder() {
     if (!measures.length) {
       return false;
     }
