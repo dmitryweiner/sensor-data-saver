@@ -1,6 +1,7 @@
 let express = require('express');
 let router = express.Router();
 let SensorMeasure = require('../models/sensorMeasure');
+let Image = require('../models/image');
 let Sensor = require('../models/sensor');
 
 /* GET home page. */
@@ -76,18 +77,17 @@ router.get('/images', function (req, res, next) {
     id = req.query.id;
   }
 
-  SensorMeasure.findById(id, (err, measure) => {
+  Image.findOne({measureId: id}, (err, image) => {
     if (err) {
       console.error('error', err.message);
       return res.status(500).json(JSON.stringify(err));
     }
-    if (!measure) {
+    if (!image) {
       return res.status(404).json({
         message: 'Not found'
       });
     }
-    const parameter = measure.parameters.find((parameter) => parameter.type === 'image');
-    const img = new Buffer(parameter.value.replace(/^data:image\/jpeg;base64,/, ''), 'base64');
+    const img = new Buffer(image.content.replace(/^data:image\/jpeg;base64,/, ''), 'base64');
 
     res.writeHead(200, {
       'Content-Type': 'image/jpeg',
