@@ -108,6 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
     dataset = [];
     chart.updateOptions({ file: dataset });
     measures = [];
+    currentPictureIndex = -1;
   }
 
   /**
