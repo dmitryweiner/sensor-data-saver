@@ -109,15 +109,14 @@ router.get('/images', function (req, res, next) {
  */
 function reduce(measures, reduceRatio) {
   let result = [];
-  let currentMeasure = null;
-  measures.forEach((measure, index) => {
-    if (reduceRatio === 1 || (index % reduceRatio) === (reduceRatio - 1)) { // get last of Nth
+  measures.reverse().forEach((measure, index) => {
+    if ((index % reduceRatio) === 0) { // get 1st of Nth
       let measureToPut = measure;
       measureToPut.parameters = measureToPut.parameters.filter((parameter) => parameter.type !== 'image');
       result.push(measureToPut);
     }
   });
-  return result;
+  return result.reverse();
 }
 
 module.exports = router;
