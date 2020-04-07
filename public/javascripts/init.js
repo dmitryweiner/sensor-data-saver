@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let currentTime;
   let dataset = [];
   let measures = [];
+  let currentPictureIndex = -1;
   let chart = new Dygraph(document.getElementById('chart'), dataset, {
     legend: 'always',
     drawPoints: true,
@@ -89,10 +90,13 @@ document.addEventListener('DOMContentLoaded', function () {
     pictureSelector.min = 0;
     pictureSelector.max = measures.length - 1;
     pictureSelector.step = 1;
-    pictureSelector.value = measures.length - 1;
+    if (currentPictureIndex === -1) { // first run
+      pictureSelector.value = measures.length - 1;
+      currentPictureIndex = pictureSelector.value;
+    }
 
     if (measures.length) {
-      displayPictureAndDate(measures[measures.length - 1]);
+      displayPictureAndDate(measures[currentPictureIndex]);
     }
   }
 
@@ -179,9 +183,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const pictureSelector = document.getElementById('pictureSelector');
   pictureSelector.addEventListener('input', function (event) {
-    const currentPicture = event.target.value;
-    if (typeof measures[currentPicture] !== 'undefined') {
-      displayPictureAndDate(measures[currentPicture]);
+    currentPictureIndex = event.target.value;
+    if (typeof measures[currentPictureIndex] !== 'undefined') {
+      displayPictureAndDate(measures[currentPictureIndex]);
     }
   });
 
