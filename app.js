@@ -75,9 +75,8 @@ client.on('message', async function (topic, message) {
 
   try {
     var sensor;
-    try {
-      sensor = await Sensor.findOne({ 'name': sensorName }).exec();
-    } catch (e) {
+    sensor = await Sensor.findOne({ 'name': sensorName }).exec();
+    if (!sensor) {
       sensor = new Sensor({
         name: sensorName,
         description: '' // will be implemented later (may be)
