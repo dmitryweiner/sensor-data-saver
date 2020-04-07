@@ -3,7 +3,7 @@ var config = require('../config');
 var Schema = mongoose.Schema;
 
 module.exports = mongoose.model('SensorMeasure', new Schema({
-  sensor: { type: String, index: true },
+  sensorId: {type: mongoose.Schema.Types.ObjectId, ref: 'Sensor'},
   parameters: [
     {
       type: { type: String },

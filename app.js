@@ -10,6 +10,7 @@ var config = require('./config');
 
 var SensorMeasure = require('./models/sensorMeasure');
 var Sensor = require('./models/sensor');
+var Image = require('./models/image');
 
 var index = require('./routes/index');
 
@@ -68,42 +69,43 @@ client.on('connect', function () {
   client.subscribe('sensors/+');
 });
 
-client.on('message', function (topic, message) {
+client.on('message', async function (topic, message) {
   var messageBody, sensorMeasure, sensorName;
   sensorName = topic.split('/')[1];
+
   try {
+    var sensor;
+    try {
+      sensor = await Sensor.findOne({ 'name': sensorName }).exec();
+    } catch (e) {
+      sensor = new Sensor({
+        name: sensorName,
+        description: '' // will be implemented later (may be)
+      });
+      await sensor.save();
+    }
+
     messageBody = JSON.parse(message.toString());
     sensorMeasure = new SensorMeasure();
-    sensorMeasure.sensor = sensorName;
-    sensorMeasure.parameters = messageBody.parameters;
-    sensorMeasure.save(function (err) {
-      if (err) {
-        console.log('Error saving measure', err.message);
+    sensorMeasure.sensorId = sensor._id;
+    sensorMeasure.parameters = messageBody.parameters.filter(function(parameter) {
+      if (parameter.type !== 'image') {
+        return parameter;
       }
-      console.info('Saved new measure: ', sensorMeasure);
     });
+    await sensorMeasure.save();
 
-    if (sensorMeasure.sensor) {
-      Sensor.findOne({ 'name': sensorName }).exec(function (err, sensor) {
-        if (err) {
-          console.error(err);
-        }
-        if (!sensor) {
-          var newSensor = new Sensor({
-            name: sensorName,
-            description: '' // will be implemented later
-          });
-          newSensor.save(function (err) {
-            if (err) {
-              console.error('Error saving sensor', err.message);
-            }
-            console.info('Saved new sensor: ', newSensor);
-          });
-        }
-      });
+    var imageParameter = messageBody.parameters.find(function(parameter) {
+      return parameter.type === 'image';
+    });
+    if (imageParameter) {
+      var image = new Image();
+      image.measureId = sensorMeasure._id;
+      image.content = imageParameter.value;
+      await image.save();
     }
   } catch (err) {
-    console.error('Cannot parse message body:', err, message.toString());
+    console.error('An error occured:', err, topic, message.toString());
   }
 });
 
