@@ -83,6 +83,7 @@ client.on('message', async function (topic, message) {
         description: '' // will be implemented later (may be)
       });
       await sensor.save();
+      console.log('Saved sensor', sensor);
     }
 
     messageBody = JSON.parse(message.toString());
@@ -105,7 +106,7 @@ client.on('message', async function (topic, message) {
       await image.save();
     }
   } catch (err) {
-    console.error('An error occured:', err, topic, message.toString());
+    console.error('An error occured:', err, topic);
   }
 });
 
