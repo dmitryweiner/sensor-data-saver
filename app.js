@@ -6,6 +6,13 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mqtt = require('mqtt');
 var mongoose = require('mongoose');
+
+// to remove deprecation warnings
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
+mongoose.set('useUnifiedTopology', true);
+
 var config = require('./config');
 
 var SensorMeasure = require('./models/sensorMeasure');
