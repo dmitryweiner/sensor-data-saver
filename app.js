@@ -101,7 +101,8 @@ client.on('message', async function (topic, message) {
     if (imageParameter) {
       var image = new Image();
       image.measureId = sensorMeasure._id;
-      image.content = imageParameter.value;
+      const contentString = imageParameter.value.replace(/^data:image\/jpeg;base64,/, '');
+      image.content = new Buffer(contentString, 'base64');
       await image.save();
     }
   } catch (err) {

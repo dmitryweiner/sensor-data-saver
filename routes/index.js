@@ -87,8 +87,7 @@ router.get('/images', function (req, res, next) {
         message: 'Not found'
       });
     }
-    const img = new Buffer(image.content.replace(/^data:image\/jpeg;base64,/, ''), 'base64');
-
+    const img = image.content;
     res.writeHead(200, {
       'Content-Type': 'image/jpeg',
       'Content-Length': img.length
