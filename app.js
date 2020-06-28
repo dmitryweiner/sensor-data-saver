@@ -101,6 +101,7 @@ client.on('message', async function (topic, message) {
       }
     });
     await sensorMeasure.save();
+    console.log(`Saving measure id #${sensorMeasure._id}`);
 
     var imageParameter = messageBody.parameters.find(function(parameter) {
       return parameter.type === 'image';
@@ -111,6 +112,7 @@ client.on('message', async function (topic, message) {
       const contentString = imageParameter.value.replace(/^data:image\/jpeg;base64,/, '');
       image.content = new Buffer(contentString, 'base64');
       await image.save();
+      console.log(`Saving image id #${image._id} ${image.content.length} bytes`);
     }
   } catch (err) {
     console.error('An error occured:', err, topic);
