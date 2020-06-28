@@ -12,5 +12,5 @@ module.exports = mongoose.model('SensorMeasure', new Schema({
   ],
   timestamp: { type: Date, default: Date.now }
 }, {
-  capped: config.maxMeasuresDbStorage
+  capped: { size: config.maxMeasuresDbStorage, autoIndexId: true }
 }));
